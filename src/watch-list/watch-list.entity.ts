@@ -1,0 +1,32 @@
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { User } from '../user/user.entity';
+import { WatchListMovie } from '../watch-list-movie/watch-list-movie.entity';
+
+@Entity('watch_list')
+export class WatchList {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
+
+  @Column({ nullable: false })
+  name!: string;
+
+  @CreateDateColumn()
+  createdAt!: Date;
+
+  @UpdateDateColumn()
+  updatedAt!: Date;
+
+  @ManyToOne(() => User, (user) => user.watchLists)
+  user!: User;
+
+  @OneToMany(() => WatchListMovie, (watchListMovie) => watchListMovie.watchList)
+  watchListMovies!: WatchListMovie[];
+}
