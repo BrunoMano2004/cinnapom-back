@@ -4,7 +4,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UserRepository } from './user.repository';
-import { use } from 'passport';
 import { User } from './user.entity';
 
 @Injectable()

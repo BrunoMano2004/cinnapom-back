@@ -4,6 +4,7 @@ import { env } from 'process';
 import { PaginatedMoviesDto } from './dto/discover-paginated-movie.dto';
 import { plainToInstance } from 'class-transformer';
 import { GenresListDto } from './dto/genres-list.dt';
+import { MovieDetailDto } from './dto/describe-movie.dto';
 
 @Injectable()
 export class TmdbApiRepository {
@@ -41,5 +42,15 @@ export class TmdbApiRepository {
 
   async getListOfGenre(): Promise<GenresListDto> {
     return this.get('/genre/movie/list', { language: 'pt' });
+  }
+
+  async getMovieById(id: number): Promise<MovieDetailDto> {
+    const raw = await this.get('/movie/movie_id', {
+      language: 'pt-BR',
+      movie_id: id,
+    });
+    return plainToInstance(MovieDetailDto, raw, {
+      excludeExtraneousValues: true,
+    });
   }
 }

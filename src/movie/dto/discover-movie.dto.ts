@@ -1,4 +1,4 @@
-import { Expose, plainToInstance } from 'class-transformer';
+import { Expose } from 'class-transformer';
 
 export class DiscoverMovieDto {
   @Expose() id!: number;

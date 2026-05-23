@@ -18,6 +18,9 @@ export class WatchList {
   @Column({ nullable: false })
   name!: string;
 
+  @Column({ nullable: true })
+  imageCoverUrl?: string;
+
   @CreateDateColumn()
   createdAt!: Date;
 

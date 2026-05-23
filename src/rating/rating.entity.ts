@@ -7,7 +7,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../user/user.entity';
-import { Movie } from '../movie/movie.entity';
 
 @Entity('rating')
 export class Rating {
@@ -29,6 +28,5 @@ export class Rating {
   @ManyToOne(() => User, (user) => user.ratings)
   user!: User;
 
-  @ManyToOne(() => Movie, (movie) => movie.ratings)
-  movie!: Movie;
+  tmdbMovieId!: number;
 }

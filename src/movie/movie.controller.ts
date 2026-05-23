@@ -6,9 +6,11 @@ import {
   Query,
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
-import { DiscoverMovieDto } from './dto/discover-movie.dto';
 import { PaginatedMoviesDto } from './dto/discover-paginated-movie.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Movie')
+@ApiBearerAuth()
 @Controller('movie')
 export class MovieController {
   constructor(private readonly movieService: MovieService) {}
