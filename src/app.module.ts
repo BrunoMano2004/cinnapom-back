@@ -9,6 +9,7 @@ import { WatchListModule } from './watch-list/watch-list.module';
 import { MovieModule } from './movie/movie.module';
 import { WatchListMovieModule } from './watch-list-movie/watch-list-movie.module';
 import { RatingModule } from './rating/rating.module';
+import { WatchListMemberModule } from './watch-list-member/watch-list-member.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { RatingModule } from './rating/rating.module';
     MovieModule,
     WatchListMovieModule,
     RatingModule,
+    WatchListMemberModule,
   ],
   controllers: [],
   providers: [

@@ -19,7 +19,7 @@ export class WatchListRepository extends Repository<WatchList> {
   }
 
   async deleteWatchList(id: string, user: User): Promise<void> {
-    await this.delete({ id, user });
+    await this.delete({ id, user: { id: user.id } });
   }
 
   async updateWatchListName(
@@ -27,7 +27,7 @@ export class WatchListRepository extends Repository<WatchList> {
     id: string,
     user: User,
   ): Promise<void> {
-    await this.update({ id, user }, { name });
+    await this.update({ id, user: { id: user.id } }, { name });
   }
 
   async listAllWatchLists(user: User): Promise<WatchList[]> {

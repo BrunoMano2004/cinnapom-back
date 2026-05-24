@@ -28,5 +28,6 @@ export class Rating {
   @ManyToOne(() => User, (user) => user.ratings)
   user!: User;
 
+  @Column()
   tmdbMovieId!: number;
 }
