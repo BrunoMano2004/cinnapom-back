@@ -25,7 +25,10 @@ export class WatchListMemberRepository extends Repository<WatchListMember> {
   async findByWatchList(watchListId: string): Promise<WatchListMember[]> {
     return await this.find({
       where: { watchList: { id: watchListId } },
-      relations: ['user'],
+      relations: {
+        user: true,
+        watchList: true,
+      },
     });
   }
 
