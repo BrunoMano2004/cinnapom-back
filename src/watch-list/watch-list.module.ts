@@ -10,6 +10,7 @@ import { WatchListMovieModule } from '../watch-list-movie/watch-list-movie.modul
 import { WatchListMovieRepository } from '../watch-list-movie/watch-list-movie.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WatchList } from './watch-list.entity';
+import { WatchListMemberRepository } from '../watch-list-member/watch-list-member.repository';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { WatchList } from './watch-list.entity';
     TmdbApiRepository,
     WatchListRepository,
     WatchListMovieRepository,
+    WatchListMemberRepository,
   ],
   controllers: [WatchListController],
   exports: [WatchListRepository],

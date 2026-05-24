@@ -16,5 +16,6 @@ import { UserRepository } from '../user/user.repository';
     UserRepository,
   ],
   controllers: [WatchListMemberController],
+  exports: [WatchListMemberRepository],
 })
 export class WatchListMemberModule {}
