@@ -6,5 +6,6 @@ import { TmdbApiRepository } from './tmdb-api.repository';
 @Module({
   providers: [MovieService, TmdbApiRepository],
   controllers: [MovieController],
+  exports: [TmdbApiRepository],
 })
 export class MovieModule {}

@@ -31,11 +31,11 @@ export class WatchListRepository extends Repository<WatchList> {
   }
 
   async listAllWatchLists(user: User): Promise<WatchList[]> {
-    return await this.find({ where: { user } });
+    return await this.find({ where: { user: { id: user.id } } });
   }
 
   async findWatchListById(id: string, user: User): Promise<WatchList | null> {
-    return await this.findOne({ where: { id, user } });
+    return await this.findOne({ where: { id, user: { id: user.id } } });
   }
 
   async findWatchListByName(name: string): Promise<WatchList | null> {

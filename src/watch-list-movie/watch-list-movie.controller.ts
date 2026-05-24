@@ -1,4 +1,37 @@
-import { Controller } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
+import { WatchListMovieService } from './watch-list-movie.service';
+import { AddWatchListMovieDto } from './dto/watch-list-movie-add.dto';
+import { CurrentUser } from '../auth/decorator/current-user.decorator';
 
 @Controller('watch-list-movie')
-export class WatchListMovieController {}
+export class WatchListMovieController {
+  constructor(private readonly watchListMovieService: WatchListMovieService) {}
+
+  @Post('add')
+  async addMovieToList(
+    @Body() dto: AddWatchListMovieDto,
+    @CurrentUser() user,
+  ): Promise<void> {
+    await this.watchListMovieService.addMovieToWatchList(dto, user.email);
+  }
+
+  @Delete('watchListMovieId/:wlmId/movieId/:movieId')
+  async removeMovieFromList(
+    @Param('wlmId') wlmId: string,
+    @Param('movieId', ParseIntPipe) movieId: number,
+    @CurrentUser() user,
+  ): Promise<void> {
+    await this.watchListMovieService.removeMovieFromWatchList(
+      wlmId,
+      movieId,
+      user.email,
+    );
+  }
+}

@@ -4,7 +4,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { WatchListRepository } from './watch-list.repository';
-import { WatchList } from './watch-list.entity';
 import { UserRepository } from '../user/user.repository';
 import { CreateWatchListDto } from './dto/watch-list-create.dto';
 import { User } from '../user/user.entity';
@@ -13,6 +12,8 @@ import { FindOneWatchListDto } from './dto/watch-list-find-one.dto';
 import { TmdbApiRepository } from '../movie/tmdb-api.repository';
 import { WatchListMovie } from '../watch-list-movie/watch-list-movie.entity';
 import { MovieDetailDto } from '../movie/dto/describe-movie.dto';
+import { UpdateNameWacthListDto } from './dto/watch-list-update-name.dto';
+import { WatchListMovieRepository } from '../watch-list-movie/watch-list-movie.repository';
 
 @Injectable()
 export class WatchListService {
@@ -20,6 +21,7 @@ export class WatchListService {
     private readonly watchListRepository: WatchListRepository,
     private readonly userRepository: UserRepository,
     private readonly tmdbApiRepository: TmdbApiRepository,
+    private readonly watchListMovieRepository: WatchListMovieRepository,
   ) {}
 
   private async getUserBd(email: string): Promise<User> {
@@ -75,14 +77,42 @@ export class WatchListService {
     if (!watchList) {
       throw new NotFoundException('Watch list not found');
     } else {
-      const wlm = watchList.watchListMovies;
-      const movies = await Promise.all(
-        wlm.map(async (wlm: WatchListMovie): Promise<MovieDetailDto> => {
-          return await this.tmdbApiRepository.getMovieById(wlm.tmdbMovieId);
-        }),
-      );
+      const wlm =
+        await this.watchListMovieRepository.getWatchListMoviesByWatchListId(
+          watchList.id,
+        );
 
-      return new FindOneWatchListDto(watchList, movies);
+      if (wlm) {
+        const movies = await Promise.all(
+          wlm.map(async (wlm: WatchListMovie): Promise<MovieDetailDto> => {
+            return await this.tmdbApiRepository.getMovieById(wlm.tmdbMovieId);
+          }),
+        );
+
+        return new FindOneWatchListDto(watchList, movies);
+      } else {
+        return new FindOneWatchListDto(watchList);
+      }
     }
+  }
+
+  async delete(watchListId: string, email: string): Promise<void> {
+    const user = await this.getUserBd(email);
+
+    await this.watchListRepository.deleteWatchList(watchListId, user);
+  }
+
+  async updateName(
+    updateName: UpdateNameWacthListDto,
+    watchListId: string,
+    email: string,
+  ): Promise<void> {
+    const user = await this.getUserBd(email);
+
+    await this.watchListRepository.updateWatchListName(
+      updateName.name,
+      watchListId,
+      user,
+    );
   }
 }

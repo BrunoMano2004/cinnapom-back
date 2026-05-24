@@ -45,11 +45,24 @@ export class TmdbApiRepository {
   }
 
   async getMovieById(id: number): Promise<MovieDetailDto> {
-    const raw = await this.get('/movie/movie_id', {
+    const raw = await this.get(`/movie/${id}`, {
       language: 'pt-BR',
-      movie_id: id,
     });
     return plainToInstance(MovieDetailDto, raw, {
+      excludeExtraneousValues: true,
+    });
+  }
+
+  async searchMovieByTtitle(
+    query: string,
+    page: number,
+  ): Promise<PaginatedMoviesDto> {
+    const raw = await this.get('/search/movie', {
+      query,
+      language: 'pt-BR',
+      page,
+    });
+    return plainToInstance(PaginatedMoviesDto, raw, {
       excludeExtraneousValues: true,
     });
   }
