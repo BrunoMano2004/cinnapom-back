@@ -4,6 +4,7 @@ import { AddMemberDto } from './dto/add-member.dto';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { WatchListMember } from './watch-list-member.entity';
+import type { UserTokenInterface } from '../auth/user.token.interface';
 
 @ApiTags('WatchListMember')
 @ApiBearerAuth()
@@ -17,7 +18,7 @@ export class WatchListMemberController {
   async addMember(
     @Param('watchListId') watchListId: string,
     @Body() dto: AddMemberDto,
-    @CurrentUser() user,
+    @CurrentUser() user: UserTokenInterface,
   ): Promise<void> {
     await this.watchListMemberService.addMember(
       watchListId,
@@ -30,7 +31,7 @@ export class WatchListMemberController {
   async removeMember(
     @Param('watchListId') watchListId: string,
     @Param('memberUserId') memberUserId: string,
-    @CurrentUser() user,
+    @CurrentUser() user: UserTokenInterface,
   ): Promise<void> {
     await this.watchListMemberService.removeMember(
       watchListId,
@@ -42,7 +43,7 @@ export class WatchListMemberController {
   @Get(':watchListId/members')
   async listMembers(
     @Param('watchListId') watchListId: string,
-    @CurrentUser() user,
+    @CurrentUser() user: UserTokenInterface,
   ): Promise<WatchListMember[]> {
     return await this.watchListMemberService.listMembers(
       watchListId,
@@ -51,7 +52,9 @@ export class WatchListMemberController {
   }
 
   @Get('shared-with-me')
-  async sharedWithMe(@CurrentUser() user): Promise<WatchListMember[]> {
+  async sharedWithMe(
+    @CurrentUser() user: UserTokenInterface,
+  ): Promise<WatchListMember[]> {
     return await this.watchListMemberService.listSharedWithMe(user.email);
   }
 }

@@ -16,7 +16,11 @@ export class UserRepository extends Repository<User> {
     await this.save(user);
   }
 
-  async updateNickname(email: string, nickname: string) {
+  async updateNickname(email: string, nickname: string): Promise<void> {
     await this.update({ email }, { nickname });
+  }
+
+  async getById(id: string): Promise<User | null> {
+    return await this.findOne({ where: { id } });
   }
 }

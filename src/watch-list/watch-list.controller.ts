@@ -6,6 +6,7 @@ import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { UpdateNameWacthListDto } from './dto/watch-list-update-name.dto';
 import { ListAllWatchListDto } from './dto/watch-list-list-all.dto';
 import { FindOneWatchListDto } from './dto/watch-list-find-one.dto';
+import type { UserTokenInterface } from '../auth/user.token.interface';
 
 @ApiTags('Watch List')
 @ApiBearerAuth()
@@ -15,20 +16,22 @@ export class WatchListController {
 
   @Post('create')
   async createWatchList(
-    @CurrentUser() user,
+    @CurrentUser() user: UserTokenInterface,
     @Body() dto: CreateWatchListDto,
   ): Promise<void> {
     await this.watchListService.create(dto, user.email);
   }
 
   @Get('listAll')
-  async listAll(@CurrentUser() user): Promise<ListAllWatchListDto[]> {
+  async listAll(
+    @CurrentUser() user: UserTokenInterface,
+  ): Promise<ListAllWatchListDto[]> {
     return await this.watchListService.listAll(user.email);
   }
 
   @Get('getById/:id')
   async getById(
-    @CurrentUser() user,
+    @CurrentUser() user: UserTokenInterface,
     @Param('id') id: string,
   ): Promise<FindOneWatchListDto> {
     return await this.watchListService.getById(id, user.email);
@@ -36,7 +39,7 @@ export class WatchListController {
 
   @Patch('updateName/:id')
   async updateName(
-    @CurrentUser() user,
+    @CurrentUser() user: UserTokenInterface,
     @Param('id') id: string,
     @Body() dto: UpdateNameWacthListDto,
   ): Promise<void> {

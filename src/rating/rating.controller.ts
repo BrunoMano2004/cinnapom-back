@@ -14,6 +14,7 @@ import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { UpdateRatingDto } from './dto/rating-update.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ListRatingDto } from './dto/rating-list.dto';
+import type { UserTokenInterface } from '../auth/user.token.interface';
 
 @ApiTags('Rating')
 @ApiBearerAuth()
@@ -24,7 +25,7 @@ export class RatingController {
   @Post('crate')
   async createNewRating(
     @Body() dto: CreateRatingDto,
-    @CurrentUser() user,
+    @CurrentUser() user: UserTokenInterface,
   ): Promise<void> {
     await this.ratingService.createRating(dto, user.email);
   }
@@ -33,7 +34,7 @@ export class RatingController {
   async updateRating(
     @Body() dto: UpdateRatingDto,
     @Param('ratingId') ratingId: string,
-    @CurrentUser() user,
+    @CurrentUser() user: UserTokenInterface,
   ): Promise<void> {
     await this.ratingService.updateRating(ratingId, dto, user.email);
   }
@@ -41,7 +42,7 @@ export class RatingController {
   @Delete('remove/:ratingId')
   async deleteRating(
     @Param('ratingId') ratingId: string,
-    @CurrentUser() user,
+    @CurrentUser() user: UserTokenInterface,
   ): Promise<void> {
     await this.ratingService.deleteRating(user.email, ratingId);
   }
@@ -49,7 +50,7 @@ export class RatingController {
   @Get('getByMovie/:movieId')
   async getRatingByMovieAndUser(
     @Param('movieId', ParseIntPipe) movieId: number,
-    @CurrentUser() user,
+    @CurrentUser() user: UserTokenInterface,
   ): Promise<ListRatingDto> {
     return await this.ratingService.getRatingByUserAndMovie(
       user.email,
@@ -58,7 +59,9 @@ export class RatingController {
   }
 
   @Get('listAll')
-  async listAllRatings(@CurrentUser() user): Promise<ListRatingDto[]> {
+  async listAllRatings(
+    @CurrentUser() user: UserTokenInterface,
+  ): Promise<ListRatingDto[]> {
     return await this.ratingService.listAllRatings(user.email);
   }
 }

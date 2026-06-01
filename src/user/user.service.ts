@@ -28,4 +28,14 @@ export class UserService {
 
     await this.userRepository.createOne(user);
   }
+
+  async getById(id: string): Promise<User> {
+    const user = await this.userRepository.getById(id);
+
+    if (!user) {
+      throw new NotFoundException('User nor found with this id');
+    }
+
+    return user;
+  }
 }

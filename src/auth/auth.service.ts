@@ -1,8 +1,12 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
+import { UserInterface } from './user.interface';
 import { User } from '../user/user.entity';
-import { error } from 'console';
 
 @Injectable()
 export class AuthService {
@@ -11,16 +15,23 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
-  async login(user: any): Promise<{ access_token: string }> {
+  async login(user: UserInterface): Promise<{ access_token: string }> {
+    let userBd: User;
+
     try {
-      await this.userService.create(
-        new User(user.email, user.name, user.avatar),
-      );
+      userBd = await this.userService.findByEmail(user.email);
     } catch (error) {
-      if (!(error instanceof ConflictException)) throw error;
+      if (error instanceof NotFoundException) {
+        const newUser = new User(user.email, user.name);
+        await this.userService.create(newUser);
+
+        userBd = await this.userService.findByEmail(user.email);
+      } else {
+        throw new InternalServerErrorException();
+      }
     }
 
-    const payload = { email: user.email };
+    const payload = { email: userBd.email, id: userBd.id };
 
     return {
       access_token: this.jwtService.sign(payload),

@@ -9,6 +9,7 @@ import {
 import { WatchList } from '../watch-list/watch-list.entity';
 import { Rating } from '../rating/rating.entity';
 import { WatchListMember } from '../watch-list-member/watch-list-member.entity';
+import { Friendship } from '../friendship/friendship.entity';
 
 @Entity('user')
 export class User {
@@ -44,4 +45,10 @@ export class User {
 
   @OneToMany(() => WatchListMember, (member) => member.user)
   watchListMembers!: WatchListMember[];
+
+  @OneToMany(() => Friendship, (friendship) => friendship.requester)
+  friendshipRequestsSent!: Friendship[];
+
+  @OneToMany(() => Friendship, (friendship) => friendship.addressee)
+  friendshipRequestsReceived!: Friendship[];
 }

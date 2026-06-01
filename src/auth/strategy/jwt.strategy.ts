@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
+import { UserTokenInterface } from '../user.token.interface';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -12,8 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(payload: any) {
-    // O que retornar aqui fica disponível como req.user
-    return { email: payload.email, name: payload.name };
+  async validate(payload: any): Promise<UserTokenInterface> {
+    return { email: payload.email, id: payload.id };
   }
 }

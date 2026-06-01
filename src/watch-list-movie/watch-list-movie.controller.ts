@@ -9,6 +9,7 @@ import {
 import { WatchListMovieService } from './watch-list-movie.service';
 import { AddWatchListMovieDto } from './dto/watch-list-movie-add.dto';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
+import type { UserTokenInterface } from '../auth/user.token.interface';
 
 @Controller('watch-list-movie')
 export class WatchListMovieController {
@@ -17,7 +18,7 @@ export class WatchListMovieController {
   @Post('add')
   async addMovieToList(
     @Body() dto: AddWatchListMovieDto,
-    @CurrentUser() user,
+    @CurrentUser() user: UserTokenInterface,
   ): Promise<void> {
     await this.watchListMovieService.addMovieToWatchList(dto, user.email);
   }
@@ -26,7 +27,7 @@ export class WatchListMovieController {
   async removeMovieFromList(
     @Param('wlmId') wlmId: string,
     @Param('movieId', ParseIntPipe) movieId: number,
-    @CurrentUser() user,
+    @CurrentUser() user: UserTokenInterface,
   ): Promise<void> {
     await this.watchListMovieService.removeMovieFromWatchList(
       wlmId,

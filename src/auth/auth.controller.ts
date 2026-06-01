@@ -18,6 +18,6 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   async googleCallback(@Req() req: any, @Res() res: any): Promise<any> {
     const { access_token } = await this.authService.login(req.user);
-    res.redirect(`https://${env.FRONT_END_URL}/?token=${access_token}`);
+    res.redirect(`${env.FRONT_END_URL}/?token=${access_token}`);
   }
 }
