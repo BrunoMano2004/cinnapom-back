@@ -22,7 +22,10 @@ export class AuthService {
       userBd = await this.userService.findByEmail(user.email);
     } catch (error) {
       if (error instanceof NotFoundException) {
-        const newUser = new User(user.email, user.name);
+        const newUser = new User();
+        newUser.email = user.email;
+        newUser.name = user.name;
+        newUser.avatar = user.avatar;
         await this.userService.create(newUser);
 
         userBd = await this.userService.findByEmail(user.email);

@@ -16,8 +16,8 @@ export class UserRepository extends Repository<User> {
     await this.save(user);
   }
 
-  async updateNickname(email: string, nickname: string): Promise<void> {
-    await this.update({ email }, { nickname });
+  async updateName(id: string, name: string): Promise<void> {
+    await this.update({ id }, { name });
   }
 
   async getById(id: string): Promise<User | null> {

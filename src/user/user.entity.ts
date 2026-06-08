@@ -13,12 +13,6 @@ import { Friendship } from '../friendship/friendship.entity';
 
 @Entity('user')
 export class User {
-  constructor(email: string, name: string, nickname?: string) {
-    this.email = email;
-    this.name = name;
-    this.nickname = nickname ?? null;
-  }
-
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
@@ -26,10 +20,10 @@ export class User {
   email!: string;
 
   @Column({ nullable: false })
-  name!: string;
+  avatar!: string;
 
-  @Column({ type: 'varchar', nullable: true })
-  nickname!: string | null;
+  @Column({ type: 'varchar' })
+  name!: string;
 
   @CreateDateColumn()
   createdAt!: Date;

@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { User } from './user.entity';
+import { UpdateNameDto } from './dto/user-update-name.dto';
 
 @Injectable()
 export class UserService {
@@ -37,5 +38,9 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async updateName(userId: string, dto: UpdateNameDto): Promise<void> {
+    await this.userRepository.updateName(userId, dto.name);
   }
 }
