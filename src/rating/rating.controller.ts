@@ -22,7 +22,7 @@ import type { UserTokenInterface } from '../auth/user.token.interface';
 export class RatingController {
   constructor(private readonly ratingService: RatingService) {}
 
-  @Post('crate')
+  @Post('create')
   async createNewRating(
     @Body() dto: CreateRatingDto,
     @CurrentUser() user: UserTokenInterface,

@@ -47,4 +47,11 @@ export class FriendshipRepository extends Repository<Friendship> {
   ): Promise<void> {
     await this.delete({ id: friendshipId, requester: { id: userId } });
   }
+
+  async findById(friendshipId: string): Promise<Friendship | null> {
+    return await this.findOne({
+      where: { id: friendshipId },
+      relations: ['requester', 'addressee'],
+    });
+  }
 }

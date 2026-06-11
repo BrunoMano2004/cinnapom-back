@@ -5,15 +5,18 @@ import {
   Param,
   ParseIntPipe,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { PaginatedMoviesDto } from './dto/discover-paginated-movie.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { MovieDetailDto } from './dto/describe-movie.dto';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @ApiTags('Movie')
 @ApiBearerAuth()
 @Controller('movie')
+@UseInterceptors(CacheInterceptor)
 export class MovieController {
   constructor(private readonly movieService: MovieService) {}
 
