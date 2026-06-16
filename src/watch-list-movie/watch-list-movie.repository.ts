@@ -20,11 +20,11 @@ export class WatchListMovieRepository extends Repository<WatchListMovie> {
   }
 
   async deleteWatchListMovie(
-    watchListMovieId: string,
+    watchListId: string,
     tmdbMovieId: number,
   ): Promise<void> {
     await this.delete({
-      id: watchListMovieId,
+      watchList: { id: watchListId },
       tmdbMovieId,
     });
   }

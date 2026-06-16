@@ -115,4 +115,8 @@ export class WatchListService {
       user,
     );
   }
+
+  async deleteWatchList(watchListId: string, userId: string): Promise<void> {
+    await this.watchListRepository.deleteWatchList(watchListId, userId);
+  }
 }

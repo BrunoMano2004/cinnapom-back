@@ -23,14 +23,14 @@ export class WatchListMovieController {
     await this.watchListMovieService.addMovieToWatchList(dto, user.email);
   }
 
-  @Delete('watchListMovieId/:wlmId/movieId/:movieId')
+  @Delete('watchListId/:wlId/movieId/:movieId')
   async removeMovieFromList(
-    @Param('wlmId') wlmId: string,
+    @Param('wlId') wlId: string,
     @Param('movieId', ParseIntPipe) movieId: number,
     @CurrentUser() user: UserTokenInterface,
   ): Promise<void> {
     await this.watchListMovieService.removeMovieFromWatchList(
-      wlmId,
+      wlId,
       movieId,
       user.email,
     );

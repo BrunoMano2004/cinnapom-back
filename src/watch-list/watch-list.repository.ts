@@ -18,8 +18,8 @@ export class WatchListRepository extends Repository<WatchList> {
     await this.save(wacthList);
   }
 
-  async deleteWatchList(id: string, user: User): Promise<void> {
-    await this.delete({ id, user: { id: user.id } });
+  async deleteWatchList(id: string, userId: string): Promise<void> {
+    await this.delete({ id, user: { id: userId } });
   }
 
   async updateWatchListName(

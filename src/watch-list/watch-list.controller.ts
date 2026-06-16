@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Get, Param, Patch } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Get,
+  Param,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 import { WatchListService } from './watch-list.service';
 import { CreateWatchListDto } from './dto/watch-list-create.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -44,5 +52,13 @@ export class WatchListController {
     @Body() dto: UpdateNameWacthListDto,
   ): Promise<void> {
     await this.watchListService.updateName(dto, id, user.email);
+  }
+
+  @Delete('watchListId/:wlId')
+  async deleteWatchList(
+    @CurrentUser() user: UserTokenInterface,
+    @Param('wlId') wlId: string,
+  ): Promise<void> {
+    await this.watchListService.deleteWatchList(wlId, user.id);
   }
 }

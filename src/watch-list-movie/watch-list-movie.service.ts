@@ -69,24 +69,15 @@ export class WatchListMovieService {
   }
 
   async removeMovieFromWatchList(
-    watchListMovieId: string,
+    watchListId: string,
     tmdbMovieId: number,
     email: string,
   ): Promise<void> {
     const user = await this.getUserBd(email);
 
-    const wlm =
-      await this.watchListMovieRepository.getWatchListMovieById(
-        watchListMovieId,
-      );
-
-    if (!wlm) {
-      throw new NotFoundException('Watch List Movie was not found');
-    }
-
-    if (await this.verifyIfWatchListExistsForUser(wlm?.watchList.id, user)) {
+    if (await this.verifyIfWatchListExistsForUser(watchListId, user)) {
       await this.watchListMovieRepository.deleteWatchListMovie(
-        watchListMovieId,
+        watchListId,
         tmdbMovieId,
       );
     } else {
