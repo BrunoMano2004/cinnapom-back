@@ -14,7 +14,7 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
-    CacheModule.register({ ttl: 600000, isGlobal: true }),
+    CacheModule.register({ ttl: 600000 }),
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
