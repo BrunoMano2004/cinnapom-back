@@ -40,10 +40,6 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor,
-    },
   ],
 })
 export class AppModule {}
