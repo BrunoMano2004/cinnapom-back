@@ -51,9 +51,9 @@ export class WatchListMovieService {
 
     if (await this.verifyIfWatchListExistsForUser(dto.watchListId, user)) {
       const wl =
-        await this.watchListMovieRepository.getWatchMovieListByMovieIdAndUser(
+        await this.watchListMovieRepository.getWatchMovieListByMovieIdAndWatchListId(
           dto.tmdbMovieId,
-          user,
+          dto.watchListId,
         );
 
       if (wl) {

@@ -33,12 +33,15 @@ export class WatchListMovieRepository extends Repository<WatchListMovie> {
     return await this.findOne({ where: { id: wlmId } });
   }
 
-  async getWatchMovieListByMovieIdAndUser(
+  async getWatchMovieListByMovieIdAndWatchListId(
     tmdbMovieId: number,
-    user: User,
+    watchListId: string,
   ): Promise<WatchListMovie | null> {
     return await this.findOne({
-      where: { tmdbMovieId, watchList: { user: { id: user.id } } },
+      where: {
+        tmdbMovieId: tmdbMovieId,
+        watchList: { id: watchListId },
+      },
     });
   }
 
