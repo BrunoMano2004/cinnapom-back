@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { TmdbApiRepository } from './tmdb-api.repository';
 import { PaginatedMoviesDto } from './dto/discover-paginated-movie.dto';
-import { MovieDetailDto } from './dto/describe-movie.dto';
+import { ListCompleteMovie } from './dto/movie-complete-list.dto';
 
 @Injectable()
 export class MovieService {
@@ -24,8 +24,17 @@ export class MovieService {
     };
   }
 
-  async getMovieDetails(movieId: number): Promise<MovieDetailDto> {
-    return await this.tmdbApiRepository.getMovieById(movieId);
+  async getMovieDetails(movieId: number): Promise<ListCompleteMovie> {
+    const movie = await this.tmdbApiRepository.getMovieById(movieId);
+    const providers = await this.tmdbApiRepository.getMovieProviders(movieId);
+
+    const completeMovie = new ListCompleteMovie();
+    completeMovie.movie = movie;
+    if (providers.results.BR) {
+      completeMovie.providers = providers.results.BR;
+    }
+
+    return completeMovie;
   }
 
   async searchMovieByTitle(

@@ -10,8 +10,8 @@ import {
 import { MovieService } from './movie.service';
 import { PaginatedMoviesDto } from './dto/discover-paginated-movie.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { MovieDetailDto } from './dto/describe-movie.dto';
 import { CacheInterceptor } from '@nestjs/cache-manager';
+import { ListCompleteMovie } from './dto/movie-complete-list.dto';
 
 @ApiTags('Movie')
 @ApiBearerAuth()
@@ -30,7 +30,7 @@ export class MovieController {
   @Get('details/:movieId')
   async getMovieDetails(
     @Param('movieId', ParseIntPipe) id: number,
-  ): Promise<MovieDetailDto> {
+  ): Promise<ListCompleteMovie> {
     return await this.movieService.getMovieDetails(id);
   }
 
