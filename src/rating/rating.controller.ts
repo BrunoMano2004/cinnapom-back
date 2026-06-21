@@ -64,4 +64,15 @@ export class RatingController {
   ): Promise<ListRatingDto[]> {
     return await this.ratingService.listAllRatings(user.email);
   }
+
+  @Get('movie/:movieId/friends')
+  async getRatingsByMovieWithFriends(
+    @Param('movieId', ParseIntPipe) movieId: number,
+    @CurrentUser() user: UserTokenInterface,
+  ): Promise<ListRatingDto[]> {
+    return await this.ratingService.getRatingsByMovieWithFriends(
+      user.email,
+      movieId,
+    );
+  }
 }

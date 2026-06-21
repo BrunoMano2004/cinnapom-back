@@ -10,7 +10,7 @@ import { MovieModule } from './movie/movie.module';
 import { WatchListMovieModule } from './watch-list-movie/watch-list-movie.module';
 import { RatingModule } from './rating/rating.module';
 import { WatchListMemberModule } from './watch-list-member/watch-list-member.module';
-import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import { FriendshipModule } from './friendship/friendship.module';
 
 @Module({
   imports: [
@@ -33,6 +33,7 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
     WatchListMovieModule,
     RatingModule,
     WatchListMemberModule,
+    FriendshipModule,
   ],
   controllers: [],
   providers: [

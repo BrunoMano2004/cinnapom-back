@@ -22,7 +22,7 @@ export class WatchListMemberController {
   ): Promise<void> {
     await this.watchListMemberService.addMember(
       watchListId,
-      dto.email,
+      dto.friendId,
       user.email,
     );
   }

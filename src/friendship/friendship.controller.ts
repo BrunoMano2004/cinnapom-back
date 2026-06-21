@@ -1,4 +1,14 @@
-import { Body, Controller, Get, HttpCode, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { FriendshipService } from './friendship.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
@@ -15,7 +25,7 @@ export class FriendshipController {
   constructor(private readonly friendshipService: FriendshipService) {}
 
   @HttpCode(201)
-  @Post('create')
+  @Post()
   async requestFriendship(
     @Body() dto: CreateFriendshipDto,
     @CurrentUser() user: UserTokenInterface,
@@ -23,25 +33,34 @@ export class FriendshipController {
     await this.friendshipService.createFriendshipRequest(user.id, dto);
   }
 
-  @Get('listFriends')
+  @Get()
   async getAllFriends(
     @CurrentUser() user: UserTokenInterface,
   ): Promise<ListFriendshipArrayDto> {
     return await this.friendshipService.listFriends(user.id);
   }
 
-  @Get('listFriendshipRequests')
+  @Get('requests')
   async listAllFriendshipRequests(
     @CurrentUser() user: UserTokenInterface,
   ): Promise<ListFriendshipRequestDto> {
     return await this.friendshipService.listFriendshipRequests(user.id);
   }
 
-  @Patch('updateStatus')
+  @Patch(':friendshipId/status')
   async updateFriendshipStatus(
     @CurrentUser() user: UserTokenInterface,
-    updateDto: UpdateFriendshipStatusDto,
+    @Body() updateDto: UpdateFriendshipStatusDto,
+    @Param('friendshipId') friendshipId: string,
   ): Promise<void> {
-    await this.friendshipService.updateStatus(user.id, updateDto);
+    await this.friendshipService.updateStatus(user.id, updateDto, friendshipId);
+  }
+
+  @Delete(':friendshipId')
+  async deleteFriendship(
+    @Param('friendshipId') friendshipId: string,
+    @CurrentUser() user: UserTokenInterface,
+  ): Promise<void> {
+    await this.friendshipService.deleteFriendship(user.id, friendshipId);
   }
 }

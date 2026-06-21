@@ -2,14 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { TmdbApiRepository } from './tmdb-api.repository';
 import { PaginatedMoviesDto } from './dto/discover-paginated-movie.dto';
 import { ListCompleteMovie } from './dto/movie-complete-list.dto';
+import { GenresListDto } from './dto/genres-list.dt';
+import { QueryMovieDto } from './dto/movie-query-dto';
 
 @Injectable()
 export class MovieService {
   constructor(private readonly tmdbApiRepository: TmdbApiRepository) {}
 
-  async getDiscoverMovies(page: number): Promise<PaginatedMoviesDto> {
+  async getDiscoverMovies(dto: QueryMovieDto): Promise<PaginatedMoviesDto> {
     const [movies, { genres }] = await Promise.all([
-      this.tmdbApiRepository.discoverMovies(page),
+      this.tmdbApiRepository.discoverMovies(dto),
       this.tmdbApiRepository.getListOfGenre(),
     ]);
 
@@ -42,5 +44,9 @@ export class MovieService {
     page: number,
   ): Promise<PaginatedMoviesDto> {
     return await this.tmdbApiRepository.searchMovieByTtitle(title, page);
+  }
+
+  async listGenres(): Promise<GenresListDto> {
+    return await this.tmdbApiRepository.getListOfGenre();
   }
 }

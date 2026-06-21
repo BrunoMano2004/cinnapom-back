@@ -12,6 +12,8 @@ import { PaginatedMoviesDto } from './dto/discover-paginated-movie.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CacheInterceptor } from '@nestjs/cache-manager';
 import { ListCompleteMovie } from './dto/movie-complete-list.dto';
+import { GenresListDto } from './dto/genres-list.dt';
+import { QueryMovieDto } from './dto/movie-query-dto';
 
 @ApiTags('Movie')
 @ApiBearerAuth()
@@ -22,9 +24,9 @@ export class MovieController {
 
   @Get('discover')
   async getDiscoverMovies(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query() query: QueryMovieDto,
   ): Promise<PaginatedMoviesDto> {
-    return this.movieService.getDiscoverMovies(page);
+    return this.movieService.getDiscoverMovies(query);
   }
 
   @Get('details/:movieId')
@@ -40,5 +42,10 @@ export class MovieController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
   ): Promise<PaginatedMoviesDto> {
     return await this.movieService.searchMovieByTitle(title, page);
+  }
+
+  @Get('genres')
+  async getListOfGenres(): Promise<GenresListDto> {
+    return await this.movieService.listGenres();
   }
 }

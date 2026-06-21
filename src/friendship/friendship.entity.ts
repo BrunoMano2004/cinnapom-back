@@ -25,7 +25,11 @@ export class Friendship {
   @JoinColumn({ name: 'addressee_id' })
   addressee!: User;
 
-  @Column({ type: 'enum', enum: FriendshipStatus })
+  @Column({
+    type: 'enum',
+    enum: FriendshipStatus,
+    default: FriendshipStatus.PENDING,
+  })
   status!: FriendshipStatus;
 
   @CreateDateColumn()

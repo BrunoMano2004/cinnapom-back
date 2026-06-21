@@ -6,6 +6,12 @@ import { plainToInstance } from 'class-transformer';
 import { GenresListDto } from './dto/genres-list.dt';
 import { MovieDetailDto } from './dto/describe-movie.dto';
 import { MovieWatchProvidersResponseDto } from './dto/movie-watch-providers-response.dto';
+import {
+  MovieLengthFilter,
+  MovieReleaseFilter,
+  MovieSortBy,
+  QueryMovieDto,
+} from './dto/movie-query-dto';
 
 @Injectable()
 export class TmdbApiRepository {
@@ -28,14 +34,30 @@ export class TmdbApiRepository {
     return response.data;
   }
 
-  async discoverMovies(page: number): Promise<PaginatedMoviesDto> {
+  async discoverMovies(dto: QueryMovieDto): Promise<PaginatedMoviesDto> {
+    const today = new Date().toISOString().split('T')[0];
+
     const raw = await this.get('/discover/movie', {
-      page,
-      include_adult: false,
+      page: dto.page,
+      include_adult: dto.includeAdult ?? false,
+      with_genres: dto.genreId,
       include_video: false,
       language: 'pt-BR',
-      sort_by: 'popularity.desc',
+      sort_by: dto.sortBy ?? MovieSortBy.POPULARITY_DESC,
+      ...(dto.release === MovieReleaseFilter.UPCOMING && {
+        'primary_release_date.gte': today,
+      }),
+      ...(dto.release === MovieReleaseFilter.RELEASED && {
+        'primary_release_date.lte': today,
+      }),
+      ...(dto.length === MovieLengthFilter.SHORT && {
+        'with_runtime.lte': 40,
+      }),
+      ...(dto.length === MovieLengthFilter.FEATURE && {
+        'with_runtime.gte': 40,
+      }),
     });
+
     return plainToInstance(PaginatedMoviesDto, raw, {
       excludeExtraneousValues: true,
     });

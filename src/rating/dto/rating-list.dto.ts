@@ -8,6 +8,12 @@ export class ListRatingDto {
     this.createdAt = rating.createdAt;
     this.updatedAt = rating.updatedAt;
     this.tmdbMovieId = rating.tmdbMovieId;
+    this.user = {
+      id: rating.user.id,
+      name: rating.user.name,
+      email: rating.user.email,
+      avatar: rating.user.avatar,
+    };
   }
 
   id!: string;
@@ -21,4 +27,6 @@ export class ListRatingDto {
   updatedAt!: Date;
 
   tmdbMovieId!: number;
+
+  user!: { id: string; name: string; email: string; avatar: string };
 }

@@ -8,6 +8,7 @@ import { WatchListMemberRepository } from './watch-list-member.repository';
 import { WatchListRepository } from '../watch-list/watch-list.repository';
 import { UserRepository } from '../user/user.repository';
 import { WatchListMember } from './watch-list-member.entity';
+import { FriendshipRepository } from '../friendship/friendship.repository';
 
 @Injectable()
 export class WatchListMemberService {
@@ -15,6 +16,7 @@ export class WatchListMemberService {
     private readonly watchListMemberRepository: WatchListMemberRepository,
     private readonly watchListRepository: WatchListRepository,
     private readonly userRepository: UserRepository,
+    private readonly friendshipRepository: FriendshipRepository,
   ) {}
 
   private async getUserByEmail(email: string) {
@@ -25,7 +27,7 @@ export class WatchListMemberService {
 
   async addMember(
     watchListId: string,
-    memberEmail: string,
+    friendId: string,
     requesterEmail: string,
   ): Promise<void> {
     const requester = await this.getUserByEmail(requesterEmail);
@@ -38,10 +40,18 @@ export class WatchListMemberService {
     if (watchList.user.id !== requester.id)
       throw new ForbiddenException('Only the owner can add members');
 
-    const targetUser = await this.userRepository.findByEmail(memberEmail);
+    const targetUser = await this.userRepository.getById(friendId);
     if (!targetUser) throw new NotFoundException('User not found');
     if (targetUser.id === requester.id)
       throw new ConflictException('You are already the owner');
+
+    const userIsFriend =
+      await this.friendshipRepository.friendshipExistsWithStatusAccepted(
+        friendId,
+        requester.id,
+      );
+    if (!userIsFriend)
+      throw new ForbiddenException('You can only add friends to a watchlist');
 
     const existing = await this.watchListMemberRepository.findMember(
       watchListId,
@@ -75,6 +85,9 @@ export class WatchListMemberService {
       memberUserId,
     );
     if (!member) throw new NotFoundException('Member not found');
+
+    if (isOwner && isRemovingSelf)
+      throw new ConflictException('Owner cannot remove themselves');
 
     await this.watchListMemberRepository.removeMember(
       watchListId,

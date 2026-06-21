@@ -5,12 +5,14 @@ import { User } from '../user/user.entity';
 import { UserRepository } from '../user/user.repository';
 import { UpdateRatingDto } from './dto/rating-update.dto';
 import { ListRatingDto } from './dto/rating-list.dto';
+import { FriendshipRepository } from '../friendship/friendship.repository';
 
 @Injectable()
 export class RatingService {
   constructor(
     private readonly ratingRepository: RatingRepository,
     private readonly userRepository: UserRepository,
+    private readonly friendshipRepository: FriendshipRepository,
   ) {}
 
   private async getUserBd(email: string): Promise<User> {
@@ -67,5 +69,27 @@ export class RatingService {
     } else {
       throw new NotFoundException('Rating not found');
     }
+  }
+
+  private async getFriendIds(userId: string): Promise<string[]> {
+    const friendships = await this.friendshipRepository.getFriends(userId);
+    return friendships.map((f) =>
+      f.requester.id === userId ? f.addressee.id : f.requester.id,
+    );
+  }
+
+  async getRatingsByMovieWithFriends(
+    email: string,
+    tmdbMovieId: number,
+  ): Promise<ListRatingDto[]> {
+    const user = await this.getUserBd(email);
+    const friendIds = await this.getFriendIds(user.id);
+
+    const ratings = await this.ratingRepository.findRatingsByMovieAndUsers(
+      tmdbMovieId,
+      [user.id, ...friendIds],
+    );
+
+    return ratings.map((r) => new ListRatingDto(r));
   }
 }

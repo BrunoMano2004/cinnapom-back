@@ -30,6 +30,19 @@ export class FriendshipService {
     );
     const requesterUser = await this.userService.getById(requesterId);
 
+    if (requesterId === addresseeUser.id) {
+      throw new BadRequestException(
+        'You cannot send a friendship request to yourself',
+      );
+    }
+
+    const exists = await this.friendshipRepository.friendshipExists(
+      requesterId,
+      addresseeUser.id,
+    );
+    if (exists)
+      throw new BadRequestException('Friendship already exists or is pending');
+
     const friendship = new Friendship();
     friendship.addressee = addresseeUser;
     friendship.requester = requesterUser;
@@ -103,14 +116,13 @@ export class FriendshipService {
   async updateStatus(
     userId: string,
     updateDto: UpdateFriendshipStatusDto,
+    friendshipId: string,
   ): Promise<void> {
     if (updateDto.status === FriendshipStatus.PENDING) {
       throw new BadRequestException('Invalid status');
     }
 
-    const friendship = await this.friendshipRepository.findById(
-      updateDto.friendshipId,
-    );
+    const friendship = await this.friendshipRepository.findById(friendshipId);
 
     if (!friendship) {
       throw new NotFoundException('Friendship not found');
@@ -136,12 +148,28 @@ export class FriendshipService {
     }
 
     if (friendship.status !== FriendshipStatus.PENDING) {
+      console.log(friendship.status);
       throw new BadRequestException('Status update not allowed');
     }
 
     await this.friendshipRepository.updateStatus(
-      updateDto.friendshipId,
+      friendshipId,
       updateDto.status,
     );
+  }
+
+  async deleteFriendship(userId: string, friendshipId: string): Promise<void> {
+    const friendship = await this.friendshipRepository.findById(friendshipId);
+
+    if (!friendship) throw new NotFoundException('Friendship not found');
+
+    if (
+      friendship.requester.id !== userId &&
+      friendship.addressee.id !== userId
+    ) {
+      throw new ForbiddenException('You are not part of this friendship');
+    }
+
+    await this.friendshipRepository.deleteFriendRequest(friendshipId);
   }
 }

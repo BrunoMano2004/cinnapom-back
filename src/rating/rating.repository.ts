@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Rating } from './rating.entity';
 import { DataSource } from 'typeorm';
 import { CreateRatingDto } from './dto/rating-create.dto';
@@ -39,7 +39,10 @@ export class RatingRepository extends Repository<Rating> {
   }
 
   async listAllRatings(user: User): Promise<Rating[]> {
-    return await this.find({ where: { user: { id: user.id } } });
+    return await this.find({
+      where: { user: { id: user.id } },
+      relations: ['user'],
+    });
   }
 
   async findOneByUserAndMovieId(
@@ -48,6 +51,20 @@ export class RatingRepository extends Repository<Rating> {
   ): Promise<Rating | null> {
     return await this.findOne({
       where: { tmdbMovieId, user: { id: user.id } },
+      relations: ['user'],
+    });
+  }
+
+  async findRatingsByMovieAndUsers(
+    tmdbMovieId: number,
+    userIds: string[],
+  ): Promise<Rating[]> {
+    return await this.find({
+      where: {
+        tmdbMovieId,
+        user: { id: In(userIds) },
+      },
+      relations: ['user'],
     });
   }
 }

@@ -8,12 +8,14 @@ import { UserModule } from '../user/user.module';
 import { WatchListModule } from '../watch-list/watch-list.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WatchListMovie } from './watch-list-movie.entity';
+import { WatchListMemberModule } from '../watch-list-member/watch-list-member.module';
 
 @Module({
   imports: [
     UserModule,
     TypeOrmModule.forFeature([WatchListMovie]),
     forwardRef(() => WatchListModule),
+    WatchListMemberModule,
   ],
   controllers: [WatchListMovieController],
   providers: [
@@ -21,6 +23,7 @@ import { WatchListMovie } from './watch-list-movie.entity';
     WatchListMovieRepository,
     UserRepository,
     WatchListRepository,
+    WatchListMovieRepository,
   ],
   exports: [WatchListMovieRepository],
 })

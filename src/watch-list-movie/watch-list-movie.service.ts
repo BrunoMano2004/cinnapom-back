@@ -8,6 +8,7 @@ import { AddWatchListMovieDto } from './dto/watch-list-movie-add.dto';
 import { User } from '../user/user.entity';
 import { UserRepository } from '../user/user.repository';
 import { WatchListRepository } from '../watch-list/watch-list.repository';
+import { WatchListMemberRepository } from '../watch-list-member/watch-list-member.repository';
 
 @Injectable()
 export class WatchListMovieService {
@@ -15,6 +16,7 @@ export class WatchListMovieService {
     private readonly watchListMovieRepository: WatchListMovieRepository,
     private readonly userRepository: UserRepository,
     private readonly watchListRepository: WatchListRepository,
+    private readonly watchListMemberRepository: WatchListMemberRepository,
   ) {}
 
   private async getUserBd(email: string): Promise<User> {
@@ -49,23 +51,31 @@ export class WatchListMovieService {
   ): Promise<void> {
     const user = await this.getUserBd(email);
 
-    if (await this.verifyIfWatchListExistsForUser(dto.watchListId, user)) {
-      const wl =
-        await this.watchListMovieRepository.getWatchMovieListByMovieIdAndWatchListId(
-          dto.tmdbMovieId,
+    const isOwner = await this.watchListRepository.findWatchListById(
+      dto.watchListId,
+      user,
+    );
+
+    const isMember = isOwner
+      ? null
+      : await this.watchListMemberRepository.findMember(
           dto.watchListId,
+          user.id,
         );
 
-      if (wl) {
-        throw new ConflictException(
-          'A movie already exists in this watch list',
-        );
-      }
-
-      await this.watchListMovieRepository.addWatchListMovie(dto);
-    } else {
+    if (!isOwner && !isMember) {
       throw new NotFoundException('Watch List was not found');
     }
+
+    const existing =
+      await this.watchListMovieRepository.getWatchMovieListByMovieIdAndWatchListId(
+        dto.tmdbMovieId,
+        dto.watchListId,
+      );
+    if (existing)
+      throw new ConflictException('A movie already exists in this watch list');
+
+    await this.watchListMovieRepository.addWatchListMovie(dto);
   }
 
   async removeMovieFromWatchList(
